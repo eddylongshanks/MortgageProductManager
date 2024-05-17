@@ -1,4 +1,4 @@
-﻿namespace CsvReaderApp.Domain.Models
+﻿namespace MortgageManager.Entities.Models
 {
     public class Products(IEnumerable<Product>? products = null)
     {

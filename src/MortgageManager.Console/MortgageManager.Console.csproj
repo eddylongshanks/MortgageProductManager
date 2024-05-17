@@ -1,17 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CsvReader.Domain\CsvReaderApp.Domain.csproj" />
+    <ProjectReference Include="..\CsvReader.Domain\MortgageManager.Domain.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <None Update="_csv\users.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

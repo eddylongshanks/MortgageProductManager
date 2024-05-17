@@ -1,8 +1,8 @@
-using CsvReaderApp.Domain.Helpers;
-using CsvReaderApp.Domain.Models;
+using MortgageManager.Domain.Helpers;
+using MortgageManager.Domain.Models;
 using System.Data;
 
-namespace CsvReaderApp.UI
+namespace MortgageManager.UI
 {
     public partial class Form1 : Form
     {

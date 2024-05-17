@@ -1,7 +1,7 @@
-﻿using CsvReaderApp.Domain.Helpers;
-using CsvReaderApp.Domain.Models;
+﻿using MortgageManager.Domain.Helpers;
+using MortgageManager.Domain.Models;
 
-namespace CsvReaderApp
+namespace MortgageManager
 {
     class Program
     {

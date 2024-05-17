@@ -1,4 +1,4 @@
-﻿namespace CsvReaderApp.UI
+﻿namespace MortgageManager.UI
 {
     partial class Form1
     {

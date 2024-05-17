@@ -1,9 +1,9 @@
 ﻿using CsvHelper;
-using CsvReaderApp.Domain.Models;
+using MortgageManager.Entities.Models;
 using System.Diagnostics;
 using System.Globalization;
 
-namespace CsvReaderApp.Domain.Helpers
+namespace MortgageManager.Domain.Helpers
 {
     public class CsvManager(string filepath)
     {

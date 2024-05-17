@@ -1,20 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CsvReader.Domain\CsvReaderApp.Domain.csproj" />
+	  <PackageReference Include="CsvHelper" Version="32.0.3" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <None Update="_csv\users.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\CsvReader.CMS\MortgageManager.CMS.csproj" />
+    <ProjectReference Include="..\MortgageManager.Entities\MortgageManager.Entities.csproj" />
   </ItemGroup>
 
 </Project>
