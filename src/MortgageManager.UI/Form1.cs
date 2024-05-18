@@ -1,11 +1,14 @@
+using MortgageManager.CMS;
 using MortgageManager.Domain.Helpers;
-using MortgageManager.Domain.Models;
+using MortgageManager.Entities.Models;
 using System.Data;
 
 namespace MortgageManager.UI
 {
     public partial class Form1 : Form
     {
+        private Products _products;
+
         public Form1()
         {
             InitializeComponent();
@@ -18,9 +21,17 @@ namespace MortgageManager.UI
             dialogImport.ShowDialog();
         }
 
-        private void UploadButtonClick(object sender, EventArgs e)
+        private async void UploadButtonClick(object sender, EventArgs e)
         {
+            var mortgageCreator = new MortgageCreator();
+            // twice?
+            var csvManager = new CsvManager("_csv/users.csv");
+            Products products = csvManager.ImportUsers();
 
+            foreach (Product product in products.GetAll())
+            {
+                await mortgageCreator.UploadMortgageProduct(product);
+            }
         }
 
         private void DialogImportFileOk(object sender, System.ComponentModel.CancelEventArgs e)

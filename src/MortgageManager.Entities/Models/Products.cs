@@ -1,8 +1,8 @@
 ﻿namespace MortgageManager.Entities.Models
 {
-    public class Products(IEnumerable<Product>? products = null)
+    public class Products(IEnumerable<Product> products)
     {
-        private IEnumerable<Product> _products = products ??= [];
+        private IEnumerable<Product> _products = products;
 
         public IEnumerable<Product> GetAll()
         {

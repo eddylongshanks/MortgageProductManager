@@ -19,7 +19,8 @@ namespace MortgageManager.Domain.Helpers
             catch (Exception ex)
             {
                 Debug.WriteLine("Error reading the CSV file: " + ex.Message);
-                return new Products();
+
+                return new Products(new List<Product>());
             }
         }
     }

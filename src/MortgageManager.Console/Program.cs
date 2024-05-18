@@ -1,5 +1,5 @@
 ﻿using MortgageManager.Domain.Helpers;
-using MortgageManager.Domain.Models;
+using MortgageManager.Entities.Models;
 
 namespace MortgageManager
 {

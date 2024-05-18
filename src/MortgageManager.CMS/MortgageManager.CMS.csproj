@@ -4,10 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <UserSecretsId>76ef6861-bbfe-4076-90af-991237a6de11</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Kontent.Ai.Management" Version="6.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>

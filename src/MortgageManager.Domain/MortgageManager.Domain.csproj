@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CsvReader.CMS\MortgageManager.CMS.csproj" />
+    <ProjectReference Include="..\MortgageManager.CMS\MortgageManager.CMS.csproj" />
     <ProjectReference Include="..\MortgageManager.Entities\MortgageManager.Entities.csproj" />
   </ItemGroup>
 

@@ -1,3 +1,6 @@
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.UserSecrets;
+
 namespace MortgageManager.UI
 {
     internal static class Program
@@ -11,7 +14,9 @@ namespace MortgageManager.UI
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
+
             Application.Run(new Form1());
+
         }
     }
 }

@@ -10,7 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CsvReader.Domain\MortgageManager.Domain.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MortgageManager.Domain\MortgageManager.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
