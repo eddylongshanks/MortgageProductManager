@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MortgageManager.CMS\MortgageManager.CMS.csproj" />
     <ProjectReference Include="..\MortgageManager.Domain\MortgageManager.Domain.csproj" />
   </ItemGroup>
   

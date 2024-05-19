@@ -1,6 +1,4 @@
 ﻿using Kontent.Ai.Management.Configuration;
-using Kontent.Ai.Management.Models.Types.Elements;
-using Kontent.Ai.Management.Models.Types;
 using Kontent.Ai.Management;
 using MortgageManager.Entities.Models;
 using Kontent.Ai.Management.Models.Items;
@@ -8,8 +6,6 @@ using Kontent.Ai.Management.Models.Shared;
 using Kontent.Ai.Management.Models.LanguageVariants.Elements;
 using Kontent.Ai.Management.Models.LanguageVariants;
 using Kontent.Ai.Management.Models.Workflow;
-using Kontent.Ai.Management.Modules.ModelBuilders;
-using Microsoft.Extensions.Configuration;
 
 namespace MortgageManager.CMS
 {
