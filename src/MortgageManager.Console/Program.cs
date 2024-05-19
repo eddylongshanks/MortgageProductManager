@@ -18,18 +18,17 @@ namespace MortgageManager
                 var productCreated = false;
                 try
                 {
-                    productCreated = mortgageManager.UploadMortgageProduct(product).Result;                    
+                    productCreated = mortgageManager.UploadMortgageProduct(product).Result;
+                    if (productCreated)
+                        Console.WriteLine($"Product Created. (Product Code: {product.ProductCode}, Name: {product.Name})");
+                    else
+                        Console.WriteLine($"Failed to create product: {product.Name}");
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                    
                 }
-
-                if (productCreated)
-                    Console.WriteLine($"Product Created. (ID: {product.ProductCode}, Name: {product.Name})");
-                else
-                    Console.WriteLine("Product creation failed.");
+                
             }
         }
     }

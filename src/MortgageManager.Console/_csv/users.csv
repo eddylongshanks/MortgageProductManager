@@ -1,2 +1,3 @@
-ProductCode,Name
-CHRISCSV,Mortgage Scripted from ConsoleApp CSV
+ProductCode,Name,ComparisonCost
+CHRISCSV_ONE,Mortgage Scripted from ConsoleApp CSV no.1,99
+CHRISCSV_TWO,Mortgage Scripted from ConsoleApp CSV no.2,99
