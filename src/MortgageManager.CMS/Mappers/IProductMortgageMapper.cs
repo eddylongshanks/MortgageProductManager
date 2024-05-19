@@ -4,8 +4,8 @@ using MortgageManager.Entities.Models;
 
 namespace MortgageManager.CMS.Mappers
 {
-    internal interface IProductMortgageMapper
+    public interface IProductMortgageMapper
     {
-        ProductMortgage Map(Product product);
+        IProductMortgage Map(Product product);
     }
 }

@@ -20,9 +20,17 @@ namespace MortgageManager
                 {
                     productCreated = mortgageManager.UploadMortgageProduct(product).Result;
                     if (productCreated)
-                        Console.WriteLine($"Product Created. (Product Code: {product.ProductCode}, Name: {product.Name})");
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"Created Product: {product.ProductCode}");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                     else
-                        Console.WriteLine($"Failed to create product: {product.Name}");
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Failed to create product: {product.ProductCode}");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
                 }
                 catch (Exception ex)
                 {

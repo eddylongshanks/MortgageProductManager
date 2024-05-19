@@ -28,23 +28,19 @@ namespace MortgageManager.CMS
 
         public async Task<bool> UploadMortgageProduct(Product product)
         {
-            ProductMortgage productMortgage = _mortgageMapper.Map(product);
+            IProductMortgage productMortgage = _mortgageMapper.Map(product);
 
-            bool productCreated = false;
-            bool productPageCreated = false;
             bool productPageUpdated = false;
             bool productUpdated = false;
 
-            await DeleteExistingScripted(productMortgage.Codename, $"page_{productMortgage.Codename}"); //temporary
+            await DeleteExistingScripted(productMortgage); //temporary
 
-            if (!await ItemExists(productMortgage.PageCodename))
-            {
-                productPageCreated = await CreateProductPage(productMortgage);
-            }
-            if (!await ItemExists(productMortgage.Codename))
-            {
-                productCreated = await CreateProduct(productMortgage);
-            }
+            if (await ItemExists(productMortgage.PageCodename) || await ItemExists(productMortgage.Codename))
+                return false;
+            
+            bool productPageCreated = await CreateProductPage(productMortgage);
+            bool productCreated = await CreateProduct(productMortgage);
+            
             if (productPageCreated && productCreated) 
             {
                 productPageUpdated = await CreateProductLink(productMortgage.PageCodename, productMortgage.Codename, "product");
@@ -55,11 +51,11 @@ namespace MortgageManager.CMS
         }
 
 
-        private async Task<bool> CreateProduct(ProductMortgage productMortgage)
+        private async Task<bool> CreateProduct(IProductMortgage productMortgage)
         {   
             var response = await _client.CreateContentItemAsync(new ContentItemCreateModel
             {
-                Name = $"SCRIPTED_Product - Mortgage - {productMortgage.ProductCode} - {productMortgage.Name}",
+                Name = $"Product - Mortgage - {productMortgage.ProductCode} - {productMortgage.Name}",
                 Codename = productMortgage.Codename,
                 Type = Reference.ByCodename("product_mortgage"),
                 Collection = Reference.ByCodename("default"),
@@ -68,27 +64,18 @@ namespace MortgageManager.CMS
             {
                 var variantResponse = await _client.UpsertLanguageVariantAsync(new LanguageVariantIdentifier(Reference.ByCodename(productMortgage.Codename), Reference.ByCodename("default")), new LanguageVariantUpsertModel()
                 {
-                    Elements = new dynamic[]
-                    {
-                        productMortgage.GetTextElementFor(nameof(productMortgage.Name)),
-                        productMortgage.GetTextElementFor(nameof(productMortgage.ProductCode)),
-                        new TextElement { Element = Reference.ByCodename("initial_interest_rate"), Value = "99"},
-                        new TextElement { Element = Reference.ByCodename("standard_variable_rate"), Value = "98"},
-                        new TextElement { Element = Reference.ByCodename("comparison_cost"), Value = "95"},
-                        new TextElement { Element = Reference.ByCodename("maximum_ltv____"), Value = "97"},
-                        new TextElement { Element = Reference.ByCodename("fees"), Value = "96"},
-                    },
+                    Elements = BuildElementList(productMortgage),
                     Workflow = new WorkflowStepIdentifier(Reference.ByCodename("default"), Reference.ByCodename("scripted"))
                 });
             }
             return response != null;
         }
 
-        private async Task<bool> CreateProductPage(ProductMortgage productMortgage)
+        private async Task<bool> CreateProductPage(IProductMortgage productMortgage)
         {
             var response = await _client.CreateContentItemAsync(new ContentItemCreateModel
             {
-                Name = $"SCRIPTED_Page - Mortgage - {productMortgage.ProductCode} - {productMortgage.Name}",
+                Name = $"Page - Mortgage - {productMortgage.ProductCode} - {productMortgage.Name}",
                 Codename = productMortgage.PageCodename,
                 Type = Reference.ByCodename("web_product_mortgage"),
                 Collection = Reference.ByCodename("default"),
@@ -137,15 +124,40 @@ namespace MortgageManager.CMS
             }
         }
 
+        protected IEnumerable<dynamic> BuildElementList(IProductMortgage productMortgage)
+        {
+            var elementsToSend = new List<dynamic>()
+            {
+                productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.ClientType)),
+                productMortgage.GetTextElementFor(nameof(productMortgage.ComparisonCost)),
+                productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.DealTerm)),
+                productMortgage.GetTextElementFor(nameof(productMortgage.Fees)),
+                productMortgage.GetTextElementFor(nameof(productMortgage.InitialInterestRate)),
+                productMortgage.GetTextElementFor(nameof(productMortgage.MaximumLtv)),
+                productMortgage.GetTextElementFor(nameof(productMortgage.Name)),
+                productMortgage.GetTextElementFor(nameof(productMortgage.ProductCode)),
+                productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.RateType)),
+                productMortgage.GetTextElementFor(nameof(productMortgage.StandardVariableRate)),
+            };
+
+            if (productMortgage.MaturityDate != null)
+                elementsToSend.Add(productMortgage.GetDateTimeElementForMaturityDate());
+
+            return elementsToSend.AsEnumerable();
+        }
+
         // remove this later
-        private async Task DeleteExistingScripted(string item, string page)
+        private async Task DeleteExistingScripted(IProductMortgage productMortgage)
         {
             try
             {
-                await _client.DeleteContentItemAsync(Reference.ByCodename(item));
-                Console.WriteLine($"'{item}' deleted");
-                await _client.DeleteContentItemAsync(Reference.ByCodename(page));
-                Console.WriteLine($"'{page}' deleted");
+                await _client.DeleteContentItemAsync(Reference.ByCodename(productMortgage.Codename));
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Deleted Product: '{productMortgage.Codename}'");
+
+                await _client.DeleteContentItemAsync(Reference.ByCodename(productMortgage.PageCodename));
+                Console.WriteLine($"Deleted Product page: '{productMortgage.PageCodename}'");
+                Console.ForegroundColor = ConsoleColor.White;
             }
             catch (Exception ex)
             {

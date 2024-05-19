@@ -8,53 +8,48 @@
 
 using Kontent.Ai.Management.Models.LanguageVariants.Elements;
 using Kontent.Ai.Management.Models.Shared;
-using MortgageManager.Entities.Models;
 
 namespace MortgageManager.CMS.Models
 {
     public class ProductMortgage : IProductMortgage
     {
-        public const string CashbackAmountCodename = "cashback_amount";
-        public const string ClientTypeCodename = "client_type";
-        public const string CompletionFeeCodename = "completion_fee";
-        public const string DailyInterestCalculationCodename = "daily_interest_calculation";
-        public const string DealTermCodename = "deal_term";
-        public const string DetailsPageCodename = "details_page";
-        public const string DocumentsCodename = "documents";
-        public const string EarlyRepaymentChargeCodename = "early_repayment_charge";
-        public const string FeesCodename = "fees";
-        public const string FullDescriptionCodename = "full_description";
-        public const string HeadingCodename = "heading";
-        public const string IllustrationCodename = "illustration";
-        public const string IncentiveOptionsCodename = "incentive_options";
-        public const string IncentivesCodename = "incentives";
-        public const string InterestRatesCodename = "interest_rates";
-        public const string KeyFeaturesCodename = "key_features";
-        public const string LoanAmountCodename = "loan_amount";
-        public const string MaturityDateCodename = "maturity_date";
-        public const string MaximumLtvCodename = "maximum_ltv____";
-        public const string MinimumTermCodename = "minimum_term";
-        public const string MortgageTypeCodename = "mortgage_type";
-        public const string MortgageTypesCodename = "mortgage_types";
-        public const string ReservationFeeCodename = "reservation_fee";
-        public const string TermsAndConditionsCodename = "terms_and_conditions";
+        //public string CashbackAmountCodename => "cashback_amount";
+        //public string CompletionFeeCodename => "completion_fee";
+        //public string DailyInterestCalculationCodename => "daily_interest_calculation";
+        //public string DetailsPageCodename => "details_page";
+        //public string DocumentsCodename => "documents";
+        //public string EarlyRepaymentChargeCodename => "early_repayment_charge";
+        //public string IncentiveOptionsCodename => "incentive_options";
+        //public string InterestRatesCodename => "interest_rates";
+        //public string KeyFeaturesCodename => "key_features";
+        //public string LoanAmountCodename => "loan_amount";
+        //public string MinimumTermCodename => "minimum_term";
+        //public string ReservationFeeCodename => "reservation_fee";
+        //public string TermsAndConditionsCodename => "terms_and_conditions";
+
+        public string ClientTypeCodename => "client_type";
         public string ComparisonCostCodename => "comparison_cost";
+        public string DealTermCodename => "deal_term";
+        public string FeesCodename => "fees";
+        public string FullDescriptionCodename => "full_description";
+        public string HeadingCodename => "heading";
+        public string IllustrationCodename => "illustration";
+        public string IncentivesCodename => "incentives";
         public string InitialInterestRateCodename => "initial_interest_rate";
-        public string StandardVariableRateCodename => "standard_variable_rate";
+        public string MaturityDateCodename => "maturity_date";
+        public string MaximumLtvCodename => "maximum_ltv____";
+        public string MortgageTypesCodename => "mortgage_types";
         public string NameCodename => "name";
         public string ProductCodeCodename => "product_code";
+        public string RateTypeCodename => "mortgage_type";
+        public string StandardVariableRateCodename => "standard_variable_rate";
 
         //public decimal? CashbackAmount { get; set; }
         //public IEnumerable<IMultipleChoiceOption> ClientType { get; set; }
-        //public string ComparisonCost { get; set; }
         //public IRichTextContent CompletionFee { get; set; }
         //public IRichTextContent DailyInterestCalculation { get; set; }
-        //public IEnumerable<IMultipleChoiceOption> DealTerm { get; set; }
-        //public IEnumerable<object> DetailsPage { get; set; }
         //public IEnumerable<IAsset> Documents { get; set; }
         //public IRichTextContent EarlyRepaymentCharge { get; set; }
-        //public string Fees { get; set; }
-        //public IRichTextContent FullDescription { get; set; }
         //public string Heading { get; set; }
         //public string Illustration { get; set; }
         //public IEnumerable<IMultipleChoiceOption> IncentiveOptions { get; set; }
@@ -62,11 +57,8 @@ namespace MortgageManager.CMS.Models
         //public string InitialInterestRate { get; set; }
         //public IRichTextContent InterestRates { get; set; }
         //public string KeyFeatures { get; set; }
-        //public IRichTextContent LoanAmount { get; set; }
-        //public DateTime? MaturityDate { get; set; }
-        //public string MaximumLtv { get; set; }
+        //public string LoanAmount { get; set; }
         //public IRichTextContent MinimumTerm { get; set; }
-        //public IEnumerable<IMultipleChoiceOption> MortgageType { get; set; }
         //public IEnumerable<ITaxonomyTerm> MortgageTypes { get; set; }
         //public IRichTextContent ReservationFee { get; set; }
         //public string StandardVariableRate { get; set; }
@@ -74,30 +66,126 @@ namespace MortgageManager.CMS.Models
         //public IEnumerable<IAsset> TermsAndConditions { get; set; }
 
         public string Codename => Name?.Replace(" ", "_").Replace("-", "_").Replace(".", "_").ToLower();
-        public string PageCodename => $"page_{Codename}";
-        public string Name { get; set; }
-        public string ProductCode { get; set; }
+        public string ClientType { get; set; }
         public string ComparisonCost { get; set; }
+        public string? DealTerm { get; set; }
+        public string Fees { get; set; }
+        public string FullDescription { get; set; }
+        public string Heading { get; set; }
+        public string Illustration { get; set; }
         public string InitialInterestRate { get; set; }
+        public DateTime? MaturityDate { get; set; }
+        public string MaximumLtv { get; set; }
+        public string MortgageTypes { get; set; }
+        public string Name { get; set; }
+        public string PageCodename => $"page_{Codename}";
+        public string ProductCode { get; set; }
+        public string RateType { get; set; }        
         public string StandardVariableRate { get; set; }
 
-        public TextElement GetTextElementFor(string propertyIdentifier)
+        public DateTimeElement GetDateTimeElementForMaturityDate()
         {
-            var property = typeof(ProductMortgage).GetProperty(propertyIdentifier);
-            string prop = $"{propertyIdentifier}Codename";
-            var propertyCodename = typeof(ProductMortgage).GetProperty(prop);
+            if (MaturityDate == null)
+                return null;
 
-            if (property == null || propertyCodename == null)
+            try
             {
-                throw new ArgumentException($"Property '{propertyIdentifier}' not found on type '{typeof(ProductMortgage).Name}'.");
+                return new DateTimeElement()
+                {
+                    Element = Reference.ByCodename(MaturityDateCodename),
+                    Value = MaturityDate.Value,
+                };
             }
-
-            return new TextElement()
+            catch (Exception ex)
             {
-                Element = Reference.ByCodename(propertyCodename.GetValue(this).ToString()),
-                Value = property.GetValue(this).ToString(),
-            };
+                throw new Exception($"Error processing {nameof(this.GetDateTimeElementForMaturityDate)} with value: {MaturityDate}. Message: {ex.Message}");
+            }
         }
+        public TextElement GetTextElementFor(string propertyName)
+        {
+            try
+            {
+                var property = typeof(ProductMortgage).GetProperty(propertyName);
+                string prop = $"{propertyName}Codename";
+                var propertyCodename = typeof(ProductMortgage).GetProperty(prop);
+
+                if (property == null || propertyCodename == null)
+                {
+                    throw new ArgumentException($"Property '{propertyName}' not found on type '{typeof(ProductMortgage).Name}'.");
+                }
+
+                var propertyValue = property.GetValue(this).ToString();
+                var propertyCodenameValue = propertyCodename.GetValue(this).ToString();
+
+                return new TextElement()
+                {
+                    Element = Reference.ByCodename(propertyCodenameValue),
+                    Value = propertyValue
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error processing {nameof(this.GetTextElementFor)} with {propertyName}. Message: {ex.Message}");
+            }
+        }
+
+        public RichTextElement GetRichTextElementFor(string propertyName)
+        {
+            try
+            {
+                var property = typeof(ProductMortgage).GetProperty(propertyName);
+                string prop = $"{propertyName}Codename";
+                var propertyCodename = typeof(ProductMortgage).GetProperty(prop);
+
+                if (property == null || propertyCodename == null)
+                {
+                    throw new ArgumentException($"Property '{propertyName}' not found on type '{typeof(ProductMortgage).Name}'.");
+                }
+
+                var propertyValue = property.GetValue(this).ToString();
+                var propertyCodenameValue = propertyCodename.GetValue(this).ToString();
+
+                return new RichTextElement()
+                {
+                    Element = Reference.ByCodename(propertyCodenameValue),
+                    Value = propertyValue
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error processing {nameof(this.GetRichTextElementFor)} with {propertyName}. Message: {ex.Message}");
+            }
+        }
+
+        public MultipleChoiceElement GetMultipleChoiceElementFor(string propertyName)
+        {
+            try
+            {
+                var property = typeof(ProductMortgage).GetProperty(propertyName);
+                string prop = $"{propertyName}Codename";
+                var propertyCodename = typeof(ProductMortgage).GetProperty(prop);
+
+                if (property == null || propertyCodename == null)
+                {
+                    throw new ArgumentException($"Property '{propertyName}' not found on type '{typeof(ProductMortgage).Name}'.");
+                }
+
+                var propertyValue = property.GetValue(this).ToString();
+                var propertyCodenameValue = propertyCodename.GetValue(this).ToString();
+
+                return new MultipleChoiceElement()
+                {
+                    Element = Reference.ByCodename(propertyCodenameValue),
+                    Value = [Reference.ByCodename(propertyValue)],
+                };
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error processing {nameof(this.GetMultipleChoiceElementFor)} with {propertyName}. Message: {ex.Message}");
+            }
+        }
+
+        
 
         //public TextElement GetProductCodeTextElement()
         //{
