@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using MortgageManager.CMS.Mappers;
 using MortgageManager.Entities.Models;
 using System.Globalization;
 
@@ -15,6 +16,7 @@ namespace MortgageManager.Domain.Helpers
                 using (var reader = new StreamReader(filepath))
                 using (CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
+                    csvReader.Context.RegisterClassMap<CsvMortgageMap>();
                     IEnumerable<Product> products = csvReader.GetRecords<Product>();
                     
                     foreach (var p in products)

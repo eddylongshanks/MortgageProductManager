@@ -1,19 +1,27 @@
-﻿using MortgageManager.CMS.Models;
+﻿using MortgageManager.CMS.Helpers;
+using MortgageManager.CMS.Models;
 using MortgageManager.Entities.Models;
 
 namespace MortgageManager.CMS.Mappers;
 
 public class ProductMortgageMapper : IProductMortgageMapper
 {
+    private ValueConverters _valueConverters;
+
+    public ProductMortgageMapper()
+    {
+        _valueConverters = new ValueConverters();
+    }
+
     public IProductMortgage Map(Product product)
     {
         ArgumentNullException.ThrowIfNull(product);
 
         var productMortgage = new ProductMortgage()
         {
-            ClientType = MapClientType(product.ClientType),
+            ClientType = MapMultipleArrayValues(product.ClientType, _valueConverters.ConvertClientTypes),
             ComparisonCost = product.APRC,
-            DealTerm = MapDealTerm(product.DealTerm),
+            DealTerm = MapArrayValuesToSingle(product.DealTerm, _valueConverters.ConvertDealTerms),
             Fees = product.Fees,
             FullDescription = product.FullDescription,
             Heading = product.Heading,
@@ -21,40 +29,32 @@ public class ProductMortgageMapper : IProductMortgageMapper
             InitialInterestRate = product.InitialInterestRate,
             MaturityDate = product.MaturityDate,
             MaximumLtv = product.MaximumLtv,
-            //MortgageTypes = product.MortgageTypes,
+            MortgageTypes = product.MortgageTypes,
             Name = product.Name,
             ProductCode = product.ProductCode,
-            RateType = MapRateType(product.RateType),
+            RateType = MapArrayValuesToSingle(product.RateType, _valueConverters.ConvertRateTypes),
             StandardVariableRate = product.StandardVariableRate,
         };
 
         return productMortgage;
     }
 
-    private string MapClientType(IEnumerable<string?> clientType) => clientType switch
+    private string[] MapMultipleArrayValues(string[] values, Func<string?, string> method)
     {
-        //"new_customer" => "new",
-        //"existing_customer" => "existing",
-        //_ => throw new ArgumentException($"""The provided value of "{nameof(clientType)}" was invalid"""),
+        List<string> convertedValues = [];
 
-        _ => throw new NotImplementedException()
-    };
+        foreach (var value in values)
+            convertedValues.Add(method(value));
 
-    private string MapDealTerm(string? dealTerm) => dealTerm switch
+        return convertedValues.ToArray();
+    }
+
+    private string[] MapArrayValuesToSingle(string[] values, Func<string?, string> method)
     {
-        "1" => "one_year",
-        "2" => "two_years",
-        "3" => "three_years",
-        "4" => "four_years",
-        "5" => "five_years",
-        _ => throw new ArgumentException($"""The provided value of "{nameof(dealTerm)}" was invalid"""),
-    };
+        List<string> convertedValues = [];
+        
+        convertedValues.Add(method(values.FirstOrDefault()));
 
-    private string MapRateType(string? rateType) => rateType switch
-    {
-        "fixed_rate" => "fixed",
-        "discounted_variable_rate" => "variable",
-        "base_rate_tracker" => "tracker",
-        _ => throw new ArgumentException($"""The provided value of "{nameof(rateType)}" was invalid"""),
-    };
+        return convertedValues.ToArray();
+    }
 }

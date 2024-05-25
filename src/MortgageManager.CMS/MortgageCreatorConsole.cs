@@ -134,6 +134,7 @@ namespace MortgageManager.CMS
                 productMortgage.GetTextElementFor(nameof(productMortgage.Fees)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.InitialInterestRate)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.MaximumLtv)),
+                productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.MortgageTypes)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.Name)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.ProductCode)),
                 productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.RateType)),

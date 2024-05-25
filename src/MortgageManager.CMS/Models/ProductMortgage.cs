@@ -8,6 +8,7 @@
 
 using Kontent.Ai.Management.Models.LanguageVariants.Elements;
 using Kontent.Ai.Management.Models.Shared;
+using System.Collections;
 
 namespace MortgageManager.CMS.Models
 {
@@ -66,9 +67,9 @@ namespace MortgageManager.CMS.Models
         //public IEnumerable<IAsset> TermsAndConditions { get; set; }
 
         public string Codename => Name?.Replace(" ", "_").Replace("-", "_").Replace(".", "_").ToLower();
-        public string ClientType { get; set; }
+        public string[] ClientType { get; set; }
         public string ComparisonCost { get; set; }
-        public string? DealTerm { get; set; }
+        public string[] DealTerm { get; set; }
         public string Fees { get; set; }
         public string FullDescription { get; set; }
         public string Heading { get; set; }
@@ -76,11 +77,11 @@ namespace MortgageManager.CMS.Models
         public string InitialInterestRate { get; set; }
         public DateTime? MaturityDate { get; set; }
         public string MaximumLtv { get; set; }
-        public string MortgageTypes { get; set; }
+        public string[] MortgageTypes { get; set; }
         public string Name { get; set; }
         public string PageCodename => $"page_{Codename}";
         public string ProductCode { get; set; }
-        public string RateType { get; set; }        
+        public string[] RateType { get; set; }        
         public string StandardVariableRate { get; set; }
 
         public DateTimeElement GetDateTimeElementForMaturityDate()
@@ -106,16 +107,13 @@ namespace MortgageManager.CMS.Models
             try
             {
                 var property = typeof(ProductMortgage).GetProperty(propertyName);
-                string prop = $"{propertyName}Codename";
-                var propertyCodename = typeof(ProductMortgage).GetProperty(prop);
+                var propertyCodename = typeof(ProductMortgage).GetProperty($"{propertyName}Codename");
 
                 if (property == null || propertyCodename == null)
-                {
                     throw new ArgumentException($"Property '{propertyName}' not found on type '{typeof(ProductMortgage).Name}'.");
-                }
 
-                var propertyValue = property.GetValue(this).ToString();
                 var propertyCodenameValue = propertyCodename.GetValue(this).ToString();
+                var propertyValue = property.GetValue(this).ToString();
 
                 return new TextElement()
                 {
@@ -134,16 +132,13 @@ namespace MortgageManager.CMS.Models
             try
             {
                 var property = typeof(ProductMortgage).GetProperty(propertyName);
-                string prop = $"{propertyName}Codename";
-                var propertyCodename = typeof(ProductMortgage).GetProperty(prop);
+                var propertyCodename = typeof(ProductMortgage).GetProperty($"{propertyName}Codename");
 
                 if (property == null || propertyCodename == null)
-                {
                     throw new ArgumentException($"Property '{propertyName}' not found on type '{typeof(ProductMortgage).Name}'.");
-                }
 
-                var propertyValue = property.GetValue(this).ToString();
                 var propertyCodenameValue = propertyCodename.GetValue(this).ToString();
+                var propertyValue = property.GetValue(this).ToString();
 
                 return new RichTextElement()
                 {
@@ -162,21 +157,18 @@ namespace MortgageManager.CMS.Models
             try
             {
                 var property = typeof(ProductMortgage).GetProperty(propertyName);
-                string prop = $"{propertyName}Codename";
-                var propertyCodename = typeof(ProductMortgage).GetProperty(prop);
+                var propertyCodename = typeof(ProductMortgage).GetProperty($"{propertyName}Codename");
 
                 if (property == null || propertyCodename == null)
-                {
                     throw new ArgumentException($"Property '{propertyName}' not found on type '{typeof(ProductMortgage).Name}'.");
-                }
 
-                var propertyValue = property.GetValue(this).ToString();
                 var propertyCodenameValue = propertyCodename.GetValue(this).ToString();
+                var propertyValues = ((IEnumerable)property.GetValue(this)).Cast<string>().ToArray();
 
                 return new MultipleChoiceElement()
                 {
                     Element = Reference.ByCodename(propertyCodenameValue),
-                    Value = [Reference.ByCodename(propertyValue)],
+                    Value = GetKontentReferences(propertyValues),
                 };
             }
             catch (Exception ex)
@@ -185,25 +177,16 @@ namespace MortgageManager.CMS.Models
             }
         }
 
-        
+        private IEnumerable<Reference> GetKontentReferences(string[] propertyValues)
+        {
+            List<Reference> references = new List<Reference>();
 
-        //public TextElement GetProductCodeTextElement()
-        //{
-        //    return new TextElement()
-        //    {
-        //        Element = Reference.ByCodename(ProductCodeCodename),
-        //        Value = ProductCode
-        //    };
-        //}
+            foreach (string value in propertyValues)
+            {
+                references.Add(Reference.ByCodename(value));
+            }
 
-        //public TextElement GetProductNameTextElement()
-        //{
-        //    return new TextElement()
-        //    {
-        //        Element = Reference.ByCodename(NameCodename),
-        //        Value = Name
-        //    };
-        //}
-
+            return references;
+        }
     }
 }
