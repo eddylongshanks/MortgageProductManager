@@ -51,29 +51,6 @@ namespace MortgageManager.CMS
             return productPageUpdated && productUpdated;
         }
 
-
-        private async Task<bool> CreateProduct(IProductMortgage productMortgage)
-        {   
-            var response = await _client.CreateContentItemAsync(new ContentItemCreateModel
-            {
-                Name = $"Product - Mortgage - {productMortgage.ProductCode} - {productMortgage.Name}",
-                Codename = productMortgage.Codename,
-                Type = Reference.ByCodename("product_mortgage"),
-                Collection = Reference.ByCodename("default"),
-            });
-
-            if (response != null)
-            {
-                var variantResponse = await _client.UpsertLanguageVariantAsync(new LanguageVariantIdentifier(Reference.ByCodename(productMortgage.Codename), Reference.ByCodename("default")), new LanguageVariantUpsertModel()
-                {
-                    Elements = BuildElementList(productMortgage),
-                    Workflow = new WorkflowStepIdentifier(Reference.ByCodename("default"), Reference.ByCodename("scripted"))
-                });
-            }
-
-            return response != null;
-        }
-
         private async Task<bool> CreateProductPage(IProductMortgage productMortgage)
         {
             var response = await _client.CreateContentItemAsync(new ContentItemCreateModel
@@ -99,6 +76,28 @@ namespace MortgageManager.CMS
             return response != null;
         }
 
+        private async Task<bool> CreateProduct(IProductMortgage productMortgage)
+        {   
+            var response = await _client.CreateContentItemAsync(new ContentItemCreateModel
+            {
+                Name = $"Product - Mortgage - {productMortgage.ProductCode} - {productMortgage.Name}",
+                Codename = productMortgage.Codename,
+                Type = Reference.ByCodename("product_mortgage"),
+                Collection = Reference.ByCodename("default"),
+            });
+
+            if (response != null)
+            {
+                var variantResponse = await _client.UpsertLanguageVariantAsync(new LanguageVariantIdentifier(Reference.ByCodename(productMortgage.Codename), Reference.ByCodename("default")), new LanguageVariantUpsertModel()
+                {
+                    Elements = BuildElementList(productMortgage),
+                    Workflow = new WorkflowStepIdentifier(Reference.ByCodename("default"), Reference.ByCodename("scripted"))
+                });
+            }
+
+            return response != null;
+        }
+
         private async Task<bool> CreateProductLink(string targetCodename, string contentItemToLinkCodename, string linkedItemCodename)
         {
             var response = await _client.UpsertLanguageVariantAsync(new LanguageVariantIdentifier(Reference.ByCodename(targetCodename), Reference.ByCodename("default")), new LanguageVariantUpsertModel()
@@ -113,20 +112,6 @@ namespace MortgageManager.CMS
             return response != null;
         }
 
-        protected async Task<bool> ItemExists(string elementCodename)
-        {
-            var identifier = Reference.ByCodename(elementCodename);
-
-            try
-            {
-                var contentItemModel = await _client.GetContentItemAsync(identifier);
-                return contentItemModel != null;
-            }
-            catch (ManagementException ex)
-            {
-                throw new Exception($"There was an unexpected error: {ex.Message}");
-            }
-        }
 
         protected IEnumerable<dynamic> BuildElementList(IProductMortgage productMortgage)
         {
@@ -149,6 +134,21 @@ namespace MortgageManager.CMS
                 elementsToSend.Add(productMortgage.GetDateTimeElementForMaturityDate());
 
             return elementsToSend.AsEnumerable();
+        }
+
+        protected async Task<bool> ItemExists(string elementCodename)
+        {
+            var identifier = Reference.ByCodename(elementCodename);
+
+            try
+            {
+                var contentItemModel = await _client.GetContentItemAsync(identifier);
+                return contentItemModel != null;
+            }
+            catch (ManagementException ex)
+            {
+                throw new Exception($"There was an unexpected error: {ex.Message}");
+            }
         }
 
         // remove this later
