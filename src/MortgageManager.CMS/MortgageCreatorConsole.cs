@@ -9,21 +9,22 @@ using Kontent.Ai.Management.Models.Workflow;
 using Kontent.Ai.Management.Exceptions;
 using MortgageManager.CMS.Models;
 using MortgageManager.CMS.Mappers;
+using MortgageManager.CMS.Helpers;
 
 namespace MortgageManager.CMS
 {
-    public class MortgageCreatorConsole
+    public class MortgageCreatorConsole()
     {
         //private IConfiguration _config = new ConfigurationBuilder()
         //    .AddUserSecrets<Settings>()
         //    .Build();
 
         private IProductMortgageMapper _mortgageMapper = new ProductMortgageMapper();
-
-        private ManagementClient _client = new ManagementClient(new ManagementOptions
+        private static readonly Credentials _credentials = new();
+        private readonly ManagementClient _client = new ManagementClient(new ManagementOptions
         {
-            EnvironmentId = null,
-            ApiKey = null
+            EnvironmentId = _credentials.EnvironmentId,
+            ApiKey = _credentials.ApiKey,
         });
 
         public async Task<bool> UploadMortgageProduct(Product product)
@@ -36,8 +37,11 @@ namespace MortgageManager.CMS
             await DeleteExistingScripted(productMortgage); //temporary
 
             if (await ItemExists(productMortgage.PageCodename) || await ItemExists(productMortgage.Codename))
+            {
+                PrintFailure($"Product: {product.ProductCode} already exists");
                 return false;
-            
+            }
+
             bool productPageCreated = await CreateProductPage(productMortgage);
             bool productCreated = await CreateProduct(productMortgage);
             
@@ -67,6 +71,7 @@ namespace MortgageManager.CMS
                     Elements = BuildElementList(productMortgage),
                     Workflow = new WorkflowStepIdentifier(Reference.ByCodename("default"), Reference.ByCodename("scripted"))
                 });
+                PrintCompletionMessage("Created product", productMortgage.ProductCode);
             }
             return response != null;
         }
@@ -84,12 +89,13 @@ namespace MortgageManager.CMS
             {
                 var variantResponse = await _client.UpsertLanguageVariantAsync(new LanguageVariantIdentifier(Reference.ByCodename(productMortgage.PageCodename), Reference.ByCodename("default")), new LanguageVariantUpsertModel()
                 {
-                    Elements = new dynamic[]
-                    {
+                    Elements =
+                    [
                         new TextElement { Element = Reference.ByCodename("title"), Value = productMortgage.Name },
-                    },
+                    ],
                     Workflow = new WorkflowStepIdentifier(Reference.ByCodename("default"), Reference.ByCodename("scripted"))
                 });
+                PrintCompletionMessage("Container page created for product", productMortgage.ProductCode);
             }
 
             return response != null;
@@ -99,12 +105,15 @@ namespace MortgageManager.CMS
         {
             var response = await _client.UpsertLanguageVariantAsync(new LanguageVariantIdentifier(Reference.ByCodename(targetCodename), Reference.ByCodename("default")), new LanguageVariantUpsertModel()
             {
-                Elements = new dynamic[]
-                {
+                Elements =
+                [
                     new LinkedItemsElement { Element = Reference.ByCodename(linkedItemCodename), Value = [Reference.ByCodename(contentItemToLinkCodename)] },
-                },
+                ],
                 Workflow = new WorkflowStepIdentifier(Reference.ByCodename("default"), Reference.ByCodename("scripted"))
             });
+
+            if (response is not null)
+                PrintCompletionMessage("Product and page linked", linkedItemCodename);
 
             return response != null;
         }
@@ -118,9 +127,9 @@ namespace MortgageManager.CMS
                 var contentItemModel = await _client.GetContentItemAsync(identifier);
                 return contentItemModel != null;
             }
-            catch (ManagementException)
+            catch (ManagementException ex)
             {
-                return false;
+                throw new Exception($"There was an unexpected error: {ex.Message}");
             }
         }
 
@@ -165,5 +174,15 @@ namespace MortgageManager.CMS
                 Console.WriteLine(ex.Message);
             }
         }
+
+        private static void PrintCompletionMessage(string message, string code)
+        {
+            
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"{message}: {code}");
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        private static void PrintFailure(string message) => Console.WriteLine($"{message}");
     }
 }
