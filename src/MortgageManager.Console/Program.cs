@@ -9,7 +9,7 @@ namespace MortgageManager
         static async Task Main(string[] args)
         {
             var csvManager = new CsvManager("_csv/users.csv");
-            var mortgageManager = new MortgageCreatorConsole();
+            var mortgageManager = new MortgageCreator();
 
             Products products = csvManager.ImportUsers();
 
