@@ -37,10 +37,7 @@ namespace MortgageManager.CMS
             await DeleteExistingScripted(productMortgage); //temporary
 
             if (await ItemExists(productMortgage.PageCodename) || await ItemExists(productMortgage.Codename))
-            {
-                PrintFailure($"Product: {product.ProductCode} already exists");
-                return false;
-            }
+                return false;            
 
             bool productPageCreated = await CreateProductPage(productMortgage);
             bool productCreated = await CreateProduct(productMortgage);
@@ -64,6 +61,7 @@ namespace MortgageManager.CMS
                 Type = Reference.ByCodename("product_mortgage"),
                 Collection = Reference.ByCodename("default"),
             });
+
             if (response != null)
             {
                 var variantResponse = await _client.UpsertLanguageVariantAsync(new LanguageVariantIdentifier(Reference.ByCodename(productMortgage.Codename), Reference.ByCodename("default")), new LanguageVariantUpsertModel()
@@ -71,8 +69,8 @@ namespace MortgageManager.CMS
                     Elements = BuildElementList(productMortgage),
                     Workflow = new WorkflowStepIdentifier(Reference.ByCodename("default"), Reference.ByCodename("scripted"))
                 });
-                PrintCompletionMessage("Created product", productMortgage.ProductCode);
             }
+
             return response != null;
         }
 
@@ -85,6 +83,7 @@ namespace MortgageManager.CMS
                 Type = Reference.ByCodename("web_product_mortgage"),
                 Collection = Reference.ByCodename("default"),
             });
+
             if (response != null)
             {
                 var variantResponse = await _client.UpsertLanguageVariantAsync(new LanguageVariantIdentifier(Reference.ByCodename(productMortgage.PageCodename), Reference.ByCodename("default")), new LanguageVariantUpsertModel()
@@ -95,7 +94,6 @@ namespace MortgageManager.CMS
                     ],
                     Workflow = new WorkflowStepIdentifier(Reference.ByCodename("default"), Reference.ByCodename("scripted"))
                 });
-                PrintCompletionMessage("Container page created for product", productMortgage.ProductCode);
             }
 
             return response != null;
@@ -111,9 +109,6 @@ namespace MortgageManager.CMS
                 ],
                 Workflow = new WorkflowStepIdentifier(Reference.ByCodename("default"), Reference.ByCodename("scripted"))
             });
-
-            if (response is not null)
-                PrintCompletionMessage("Product and page linked", linkedItemCodename);
 
             return response != null;
         }
@@ -174,15 +169,5 @@ namespace MortgageManager.CMS
                 Console.WriteLine(ex.Message);
             }
         }
-
-        private static void PrintCompletionMessage(string message, string code)
-        {
-            
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"{message}: {code}");
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-
-        private static void PrintFailure(string message) => Console.WriteLine($"{message}");
     }
 }
