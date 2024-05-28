@@ -1,6 +1,8 @@
 ﻿using MortgageManager.CMS;
 using MortgageManager.Domain.Helpers;
+using MortgageManager.Entities.Helpers;
 using MortgageManager.Entities.Models;
+using System.Diagnostics;
 
 namespace MortgageManager
 {
@@ -13,7 +15,7 @@ namespace MortgageManager
 
             Products products = csvManager.ImportUsers();
 
-            List<Task> taskList = new List<Task>();
+            List<Task<Product>> taskList = [];
 
             foreach (var product in products.GetAll())
             {
@@ -24,37 +26,49 @@ namespace MortgageManager
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
-                }
-                
+                }                
             }
 
-            int total = 0;
             while (taskList.Any())
             {
-                Task finishedTask = await Task.WhenAny(taskList);
+                Task<Product> finishedTask = await Task.WhenAny(taskList);
                 taskList.Remove(finishedTask);
-                total += 1;
-                Console.WriteLine($"Products created: {total}. Jobs left: {taskList.Count}");
+                PrintProcessedState(finishedTask, taskList.Count);
             }
 
             await Task.WhenAll(taskList);
-            PrintCompletionMessage(true);
+            PrintCompletionMessage();
         }
 
-        private static void PrintCompletionMessage(bool productCreated)
+        private static void PrintProcessedState(Task<Product> finishedTask, int tasksRemaining)
         {
-            if (productCreated)
+            if (finishedTask.IsCompletedSuccessfully)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"All Products Created.");
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write($"Product: {finishedTask.Result.ProductCode} status: ");
+
+                if (finishedTask.Result.Status != ProductStatus.ProcessedSuccessfully)
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                else
+                    Console.ForegroundColor = ConsoleColor.Green;
+
+                Console.Write($"{finishedTask.Result.Status}");
             }
             else
             {
+                Console.Write($"Error processing task: ");
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Failed to create product: ");
-                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write($"{finishedTask.Exception?.Message}");
             }
+
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine($", {tasksRemaining} products remaining...");
+        }
+
+        private static void PrintCompletionMessage()
+        {            
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"All tasks processed.");
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
