@@ -17,26 +17,33 @@ public class ProductMortgageMapper : IProductMortgageMapper
     {
         ArgumentNullException.ThrowIfNull(product);
 
-        var productMortgage = new ProductMortgage()
+        try
         {
-            ClientType = MapMultipleArrayValues(product.ClientType, _valueConverters.ConvertClientTypes),
-            ComparisonCost = product.APRC,
-            DealTerm = MapArrayValuesToSingle(product.DealTerm, _valueConverters.ConvertDealTerms),
-            Fees = product.Fees,
-            FullDescription = product.FullDescription,
-            Heading = product.Heading,
-            Illustration = product.Illustration,
-            InitialInterestRate = product.InitialInterestRate,
-            MaturityDate = product.MaturityDate,
-            MaximumLtv = product.MaximumLtv,
-            MortgageTypes = product.MortgageTypes,
-            Name = product.Name,
-            ProductCode = product.ProductCode,
-            RateType = MapArrayValuesToSingle(product.RateType, _valueConverters.ConvertRateTypes),
-            StandardVariableRate = product.StandardVariableRate,
-        };
+            var productMortgage = new ProductMortgage()
+            {
+                ClientType = MapMultipleArrayValues(product.ClientType, _valueConverters.ConvertClientTypes),
+                ComparisonCost = product.APRC,
+                DealTerm = MapArrayValuesToSingle(product.DealTerm, _valueConverters.ConvertDealTerms),
+                Fees = product.Fees,
+                FullDescription = product.FullDescription,
+                Heading = product.Heading,
+                Illustration = product.Illustration,
+                InitialInterestRate = product.InitialInterestRate,
+                MaturityDate = product.MaturityDate,
+                MaximumLtv = product.MaximumLtv,
+                MortgageTypes = product.MortgageTypes,
+                Name = product.Name,
+                ProductCode = product.ProductCode,
+                RateType = MapArrayValuesToSingle(product.RateType, _valueConverters.ConvertRateTypes),
+                StandardVariableRate = product.StandardVariableRate,
+            };
 
-        return productMortgage;
+            return productMortgage;
+        }
+        catch (Exception ex)
+        {
+            throw new ArgumentException($"Data invalid for product: {product.ProductCode}. {ex.Message}");
+        }
     }
 
     private string[] MapMultipleArrayValues(string[] values, Func<string?, string> method)
