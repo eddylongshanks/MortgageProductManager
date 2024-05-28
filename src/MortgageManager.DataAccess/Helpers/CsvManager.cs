@@ -1,19 +1,24 @@
 ﻿using CsvHelper;
-using MortgageManager.CMS.Mappers;
+using MortgageManager.DataAccess.Mappers;
 using MortgageManager.Entities.Models;
 using System.Globalization;
 
-namespace MortgageManager.Domain.Helpers
+namespace MortgageManager.DataAccess.Helpers
 {
-    public class CsvManager(string filepath)
+    public class CsvManager
     {
+        private readonly string _filePath;
+
+        public CsvManager() => _filePath = "_csv/users.csv";
+        public CsvManager(string filepath) => _filePath = filepath;
+
         public Products ImportUsers()
         {
             try
             {
                 var listOfProducts = new List<Product>();
 
-                using (var reader = new StreamReader(filepath))
+                using (var reader = new StreamReader(_filePath))
                 using (CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
                 {
                     csvReader.Context.RegisterClassMap<CsvMortgageMap>();

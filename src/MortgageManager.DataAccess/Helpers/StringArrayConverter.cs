@@ -2,7 +2,7 @@
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
 
-namespace MortgageManager.Domain.Helpers;
+namespace MortgageManager.DataAccess.Helpers;
 
 public class StringArrayConverter : DefaultTypeConverter
 {

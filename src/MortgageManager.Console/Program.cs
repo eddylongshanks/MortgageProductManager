@@ -1,8 +1,7 @@
 ﻿using MortgageManager.CMS;
-using MortgageManager.Domain.Helpers;
+using MortgageManager.DataAccess.Helpers;
 using MortgageManager.Entities.Helpers;
 using MortgageManager.Entities.Models;
-using System.Diagnostics;
 
 namespace MortgageManager
 {
@@ -10,7 +9,7 @@ namespace MortgageManager
     {
         static async Task Main(string[] args)
         {
-            var csvManager = new CsvManager("_csv/users.csv");
+            var csvManager = new CsvManager();
             var mortgageManager = new MortgageCreator();
 
             Products products = csvManager.ImportUsers();

@@ -1,8 +1,8 @@
 ﻿using CsvHelper.Configuration;
-using MortgageManager.Domain.Helpers;
+using MortgageManager.DataAccess.Helpers;
 using MortgageManager.Entities.Models;
 
-namespace MortgageManager.CMS.Mappers
+namespace MortgageManager.DataAccess.Mappers
 {
     internal class CsvMortgageMap : ClassMap<Product>
     {

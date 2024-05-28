@@ -15,7 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MortgageManager.Domain\MortgageManager.Domain.csproj" />
+    <ProjectReference Include="..\MortgageManager.DataAccess\MortgageManager.DataAccess.csproj" />
+    <ProjectReference Include="..\MortgageManager.Domain\MortgageManager.DataAccess.csproj" />
   </ItemGroup>
 
   <ItemGroup>

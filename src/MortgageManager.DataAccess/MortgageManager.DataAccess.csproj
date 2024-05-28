@@ -15,4 +15,10 @@
     <ProjectReference Include="..\MortgageManager.Entities\MortgageManager.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="_csv\users.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

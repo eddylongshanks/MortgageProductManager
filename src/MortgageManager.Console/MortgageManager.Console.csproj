@@ -9,13 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MortgageManager.CMS\MortgageManager.CMS.csproj" />
-    <ProjectReference Include="..\MortgageManager.Domain\MortgageManager.Domain.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Update="_csv\users.csv">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\MortgageManager.DataAccess\MortgageManager.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

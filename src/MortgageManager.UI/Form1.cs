@@ -1,5 +1,5 @@
 using MortgageManager.CMS;
-using MortgageManager.Domain.Helpers;
+using MortgageManager.DataAccess.Helpers;
 using MortgageManager.Entities.Models;
 using System.Data;
 
@@ -25,7 +25,7 @@ namespace MortgageManager.UI
         {
             var mortgageCreator = new MortgageCreator();
             // twice?
-            var csvManager = new CsvManager("_csv/users.csv");
+            var csvManager = new CsvManager();
             Products products = csvManager.ImportUsers();
 
             foreach (Product product in products.GetAll())
@@ -38,7 +38,7 @@ namespace MortgageManager.UI
         {
             pnlInfo.Visible = true;
             lblFilePath.Text = dialogImport.FileName;
-            var csvManager = new CsvManager("_csv/users.csv");
+            var csvManager = new CsvManager(dialogImport.FileName);
             Products products = csvManager.ImportUsers();
             int productCount = 0;
 
