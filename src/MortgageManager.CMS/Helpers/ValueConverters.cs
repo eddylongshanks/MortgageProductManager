@@ -32,6 +32,7 @@ namespace MortgageManager.CMS.Helpers
             "3" => "three_years",
             "5" => "five_years",
             "10" => "ten_years",
+            null => "",
             _ => throw new ArgumentException($"""The provided value of "{nameof(dealTerm)}" was invalid"""),
         };
     }

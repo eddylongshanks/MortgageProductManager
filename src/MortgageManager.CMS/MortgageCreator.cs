@@ -148,20 +148,24 @@ namespace MortgageManager.CMS
 
         protected IEnumerable<dynamic> BuildElementList(IProductMortgage productMortgage)
         {
-            var elementsToSend = new List<dynamic>()
+            var elementsToSend = new List<dynamic>
             {
                 productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.ClientType)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.ComparisonCost)),
-                productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.DealTerm)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.Fees)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.InitialInterestRate)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.MaximumLtv)),
                 productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.MortgageTypes)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.Name)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.ProductCode)),
-                productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.RateType)),
                 productMortgage.GetTextElementFor(nameof(productMortgage.StandardVariableRate)),
             };
+
+            if (!productMortgage.RateType.Any(x => x.Equals(string.Empty)))
+                elementsToSend.Add(productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.RateType)));
+
+            if (!productMortgage.DealTerm.Any(x => x.Equals(string.Empty)))
+                elementsToSend.Add(productMortgage.GetMultipleChoiceElementFor(nameof(productMortgage.DealTerm)));
 
             if (productMortgage.MaturityDate != null)
                 elementsToSend.Add(productMortgage.GetDateTimeElementForMaturityDate());

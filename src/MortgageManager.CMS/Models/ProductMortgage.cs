@@ -81,7 +81,7 @@ namespace MortgageManager.CMS.Models
         public string Name { get; set; }
         public string PageCodename => $"page_{Codename}";
         public string ProductCode { get; set; }
-        public string[] RateType { get; set; }        
+        public string[] RateType { get; set; }
         public string StandardVariableRate { get; set; }
 
         public DateTimeElement GetDateTimeElementForMaturityDate()
