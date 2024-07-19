@@ -8,6 +8,6 @@ namespace MortgageManager.Entities.Helpers
         ProductNotCreated,
         ProductPageNotCreated,
         ProcessedSuccessfully,
-        ItemsAlreadyExist,
+        AlreadyExists,
     }
 }

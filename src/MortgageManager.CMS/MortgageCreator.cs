@@ -11,16 +11,24 @@ using MortgageManager.CMS.Models;
 using MortgageManager.CMS.Mappers;
 using MortgageManager.CMS.Helpers;
 using MortgageManager.Entities.Helpers;
+using Microsoft.Extensions.Logging;
 
 namespace MortgageManager.CMS
 {
     public class MortgageCreator
     {
+        private ILogger _logger;
+        private IProductMortgageMapper _productMortgageMapper;
+
+        public MortgageCreator(ILogger<MortgageCreator> logger, IProductMortgageMapper productMortgageMapper)
+        {
+            _logger = logger;
+            _productMortgageMapper = productMortgageMapper;
+        }
         //private IConfiguration _config = new ConfigurationBuilder()
         //    .AddUserSecrets<Settings>()
         //    .Build();
-
-        private IProductMortgageMapper _mortgageMapper = new ProductMortgageMapper();
+        
         private static readonly Credentials _credentials = new();
         private readonly ManagementClient _client = new ManagementClient(new ManagementOptions
         {
@@ -31,16 +39,14 @@ namespace MortgageManager.CMS
         public async Task<Product> UploadMortgageProduct(Product product)
         {
             product.Status = ProductStatus.InProgress;
-            IProductMortgage productMortgage = _mortgageMapper.Map(product);
+            IProductMortgage productMortgage = _productMortgageMapper.Map(product);
 
             bool productPageUpdated = false;
             bool productUpdated = false;
 
-            await DeleteExistingScripted(productMortgage); //temporary
-
             if (await ItemExists(productMortgage.PageCodename) || await ItemExists(productMortgage.Codename))
             {
-                product.Status = ProductStatus.ItemsAlreadyExist;
+                product.Status = ProductStatus.AlreadyExists;
                 return product;
             }
 
@@ -62,7 +68,6 @@ namespace MortgageManager.CMS
             return product;
         }
 
-        
         private async Task<bool> CreateProduct(IProductMortgage productMortgage)
         {
             try
@@ -88,12 +93,9 @@ namespace MortgageManager.CMS
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine($"""Error processing product: "{productMortgage.Codename}". {ex.Message}""");
-                Console.ForegroundColor = ConsoleColor.White;
+                _logger.LogError($"""Error processing product: "{productMortgage.Codename}". {ex.Message}""");
                 return false;
             }
-            
         }
 
         private async Task<bool> CreateProductPage(IProductMortgage productMortgage)
@@ -124,9 +126,7 @@ namespace MortgageManager.CMS
             }
             catch (Exception ex)
             {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine($"""Error processing product page: "{productMortgage.Codename}". {ex.Message}""");
-                Console.ForegroundColor = ConsoleColor.White;
+                _logger.LogError($"""Error processing product page: "{productMortgage.Codename}". {ex.Message}""");
                 return false;
             }
         }
@@ -185,25 +185,6 @@ namespace MortgageManager.CMS
             catch (ManagementException)
             {
                 return false;
-            }
-        }
-
-        // remove this later
-        private async Task DeleteExistingScripted(IProductMortgage productMortgage)
-        {
-            try
-            {
-                await _client.DeleteContentItemAsync(Reference.ByCodename(productMortgage.Codename));
-                //Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Deleted Product: '{productMortgage.Codename}'");
-
-                await _client.DeleteContentItemAsync(Reference.ByCodename(productMortgage.PageCodename));
-                Console.WriteLine($"Deleted Product page: '{productMortgage.PageCodename}'");
-                //Console.ForegroundColor = ConsoleColor.White;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
             }
         }
     }

@@ -1,7 +1,10 @@
 ProductCode,Name,APRC,DealTerm,Fees,InitialInterestRate,MaturityDate,MaximumLtv,RateType,StandardVariableRate,Heading,Illustration,FullDescription,ClientType,MortgageTypes
-CSV_ONE,Mortgage Scripted from ConsoleApp CSV no.1,99,"2,3",999,98,2024-11-08T00:00:00Z,97,fixed_rate,96,HeadingField,IllustrationField,FullDescriptionField,"new_customer,existing_customer","buy_to_let,shared_ownership,interest_only"
-CSV_TWO,Mortgage Scripted from ConsoleApp CSV no.2,95,3,998,94,,93,base_rate_tracker,92,HeadingField,IllustrationField,FullDescriptionField,,interest_only
-CSV_THREE,Mortgage Scripted from ConsoleApp CSV no.3,95,3,998,94,,93,base_rate_tracker,92,HeadingField,IllustrationField,FullDescriptionField,new_customer,shared_ownership
-CSV_FOUR,Mortgage Scripted from ConsoleApp CSV no.4,99,"2,3",999,98,2024-12-18T00:00:00Z,97,fixed_rate,96,HeadingField,IllustrationField,FullDescriptionField,existing_customer,buy_to_let
+CSV_ONE,Mortgage Scripted from ConsoleApp CSV no.1,99,"2,3",0,1,2024-11-08T00:00:00Z,97,fixed_rate,0,HeadingField,IllustrationField,FullDescriptionField,"new_customer,existing_customer","buy_to_let,shared_ownership,interest_only"
+CSV_TWO,Mortgage Scripted from ConsoleApp CSV no.2,95,3,998,94,,93,base_rate_tracker,1,HeadingField,IllustrationField,FullDescriptionField,,interest_only
+CSV_THREE,Mortgage Scripted from ConsoleApp CSV no.3,95,2,998,94,,93,discounted_variable_rate,99,HeadingField,IllustrationField,FullDescriptionField,lolno,shared_ownership
+CSV_FOUR,Mortgage Scripted from ConsoleApp CSV no.4,99,"2,3",999,98,2024-12-18T00:00:00Z,97,fii foo,100,HeadingField,IllustrationField,FullDescriptionField,existing_customer,buy_to_let
 CSV_FIVE_NULLS,Mortgage Scripted from ConsoleApp CSV no.5 nulls,,,,,,,,,,,,,
-
+CSV_SIX,Mortgage Scripted from ConsoleApp CSV no.6,99,1,999,98,2024-12-18T00:00:00Z,100,base_rate_tracker,96,HeadingField,IllustrationField,FullDescriptionField,new_customer,shared_ownership
+CSV_seven,Mortgage Scripted from ConsoleApp CSV no.7,99,10,999,98,2024-12-18T00:00:00Z,99,base_rate_tracker,96,HeadingField,IllustrationField,FullDescriptionField,new_customer,standard
+CSV_8,Mortgage Scripted from ConsoleApp CSV no.8,99.9,"2,3,5",,98,2025-12-18T00:00:00Z,1,fixed_rate,96,HeadingField,IllustrationField,FullDescriptionField,existing_customer,buy_to_let
+CSV_NINE,Mortgage Scripted from ConsoleApp CSV no.9,1,5,5000,98,2024-12-18T00:00:00Z,0,base_rate_tracker,96,HeadingField,IllustrationField,FullDescriptionField,existing_customer,buy_to_let

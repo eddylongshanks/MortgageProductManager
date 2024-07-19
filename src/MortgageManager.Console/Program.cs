@@ -2,72 +2,100 @@
 using MortgageManager.DataAccess.Helpers;
 using MortgageManager.Entities.Helpers;
 using MortgageManager.Entities.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System;
+using MortgageManager.CMS.Mappers;
 
 namespace MortgageManager
 {
-    class Program
+    internal class Program
     {
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            var csvManager = new CsvManager();
-            var mortgageManager = new MortgageCreator();
+            var services = CreateServices();
 
-            Products products = csvManager.ImportUsers();
+            Application app = services.GetRequiredService<Application>();
+            await app.ExecuteAsync();
+        }
 
-            List<Task<Product>> taskList = [];
+        private static ServiceProvider CreateServices()
+        {
+            var services = new ServiceCollection()
+                .AddLogging(builder => builder
+                    .SetMinimumLevel(LogLevel.Trace)
+                    .AddConsole()
+                    );
+            services.AddSingleton<CsvManager>();
+            services.AddSingleton<MortgageCreator>();
+            services.AddSingleton<IProductMortgageMapper, ProductMortgageMapper>();
+            services.AddSingleton<Application>();
 
-            foreach (var product in products.GetAll())
+            return services.BuildServiceProvider();
+        }
+
+        public class Application(ILogger<Application> logger, CsvManager csvManager, MortgageCreator mortgageManager)
+        {
+            public async Task ExecuteAsync()
             {
-                try
+                int failureCount = 0;
+                Products products = csvManager.ImportUsers();
+
+                List<Task<Product>> taskList = [];
+
+                foreach (var product in products.GetAll())
                 {
-                    taskList.Add(mortgageManager.UploadMortgageProduct(product));
+                    try
+                    {
+                        taskList.Add(mortgageManager.UploadMortgageProduct(product));
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex.Message);
+                    }
                 }
-                catch (Exception ex)
+
+                while (taskList.Any())
                 {
-                    Console.WriteLine(ex.Message);
-                }                
+                    Task<Product> finishedTask = await Task.WhenAny(taskList);
+                    if (!finishedTask.IsCompletedSuccessfully)
+                        failureCount++;
+                    taskList.Remove(finishedTask);
+                    PrintProcessedState(finishedTask, taskList.Count);
+                }
+
+                await Task.WhenAll(taskList);
+                PrintCompletionMessage(failureCount);
             }
 
-            while (taskList.Any())
+            private void PrintProcessedState(Task<Product> finishedTask, int tasksRemaining)
             {
-                Task<Product> finishedTask = await Task.WhenAny(taskList);
-                taskList.Remove(finishedTask);
-                PrintProcessedState(finishedTask, taskList.Count);
-            }
-
-            await Task.WhenAll(taskList);
-            PrintCompletionMessage();
-        }
-
-        private static void PrintProcessedState(Task<Product> finishedTask, int tasksRemaining)
-        {
-            if (finishedTask.IsCompletedSuccessfully)
-            {
-                Console.Write($"Product: {finishedTask.Result.ProductCode} status: ");
-
-                if (finishedTask.Result.Status != ProductStatus.ProcessedSuccessfully)
-                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                if (finishedTask.IsCompletedSuccessfully)
+                {
+                    if (finishedTask.Result.Status == ProductStatus.ProcessedSuccessfully)
+                        Console.WriteLine($"""Product: "{finishedTask.Result.ProductCode}" created. {tasksRemaining} products remaining...""");
+                    else
+                        logger.LogWarning($"{finishedTask.Result.ProductCode}: {finishedTask.Result.Status}");
+                }
                 else
-                    Console.ForegroundColor = ConsoleColor.Green;
-
-                Console.Write($"{finishedTask.Result.Status}");
+                {
+                    logger.LogError($"{finishedTask.Exception?.Message}");
+                }
             }
-            else
+
+            private void PrintCompletionMessage(int failureCount)
             {
-                Console.Write($"Error processing task: ");
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write($"{finishedTask.Exception?.Message}");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write($"All tasks processed.");
+                
+                if (failureCount > 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.Write($" {failureCount} products were invalid.");
+                }
+
+                Console.ForegroundColor = ConsoleColor.White;
             }
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine($", {tasksRemaining} products remaining...");
-        }
-
-        private static void PrintCompletionMessage()
-        {            
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"All tasks processed.");
-            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
