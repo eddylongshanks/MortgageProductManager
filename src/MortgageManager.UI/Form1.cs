@@ -1,5 +1,7 @@
+using Microsoft.Extensions.Logging;
 using MortgageManager.CMS;
 using MortgageManager.DataAccess.Helpers;
+using MortgageManager.Entities.Helpers;
 using MortgageManager.Entities.Models;
 using System.Data;
 
@@ -8,10 +10,16 @@ namespace MortgageManager.UI
     public partial class Form1 : Form
     {
         private Products _products;
+        private readonly ILogger<Application> _logger;
+        private readonly CsvManager _csvManager;
+        private readonly MortgageCreator _mortgageCreator;
 
-        public Form1()
+        public Form1(ILogger<Application> logger, CsvManager csvManager, MortgageCreator mortgageCreator)
         {
             InitializeComponent();
+            _logger = logger;
+            _csvManager = csvManager;
+            _mortgageCreator = mortgageCreator;
             lblProductCount.Text = string.Empty;
             lblFilePath.Text = string.Empty;
         }
@@ -23,23 +31,70 @@ namespace MortgageManager.UI
 
         private async void UploadButtonClick(object sender, EventArgs e)
         {
-            var mortgageCreator = new MortgageCreator();
-            // twice?
-            var csvManager = new CsvManager();
-            Products products = csvManager.ImportUsers();
+            int failureCount = 0;            
+            Products products = _csvManager.ImportUsers();
 
-            foreach (Product product in products.GetAll())
+            List<Task<Product>> taskList = [];
+
+            foreach (var product in products.GetAll())
             {
-                await mortgageCreator.UploadMortgageProduct(product);
+                try
+                {
+                    taskList.Add(_mortgageCreator.UploadMortgageProduct(product));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                }
             }
+
+            while (taskList.Any())
+            {
+                Task<Product> finishedTask = await Task.WhenAny(taskList);
+                if (!finishedTask.IsCompletedSuccessfully)
+                    failureCount++;
+                taskList.Remove(finishedTask);
+                PrintProcessedState(finishedTask, taskList.Count);
+            }
+
+            await Task.WhenAll(taskList);
+            PrintCompletionMessage(failureCount);
+        }
+
+        private void PrintProcessedState(Task<Product> finishedTask, int tasksRemaining)
+        {
+            if (finishedTask.IsCompletedSuccessfully)
+            {
+                if (finishedTask.Result.Status == ProductStatus.ProcessedSuccessfully)
+                    Console.WriteLine($"""Product: "{finishedTask.Result.ProductCode}" created. {tasksRemaining} products remaining...""");
+                else
+                    _logger.LogWarning($"{finishedTask.Result.ProductCode}: {finishedTask.Result.Status}");
+            }
+            else
+            {
+                _logger.LogError($"{finishedTask.Exception?.Message}");
+            }
+        }
+
+        private void PrintCompletionMessage(int failureCount)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write($"All tasks processed.");
+
+            if (failureCount > 0)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.Write($" {failureCount} products were invalid.");
+            }
+
+            Console.ForegroundColor = ConsoleColor.White;
         }
 
         private void DialogImportFileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
             pnlInfo.Visible = true;
             lblFilePath.Text = dialogImport.FileName;
-            var csvManager = new CsvManager(dialogImport.FileName);
-            Products products = csvManager.ImportUsers();
+            Products products = _csvManager.ImportUsers();
             int productCount = 0;
 
             DataTable dt = new DataTable();

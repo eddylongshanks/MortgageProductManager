@@ -11,12 +11,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\MortgageManager.DataAccess\MortgageManager.DataAccess.csproj" />
-    <ProjectReference Include="..\MortgageManager.Domain\MortgageManager.DataAccess.csproj" />
   </ItemGroup>
 
   <ItemGroup>

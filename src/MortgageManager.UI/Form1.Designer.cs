@@ -61,7 +61,7 @@
             dataGridImported.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridImported.Location = new Point(0, 90);
             dataGridImported.Name = "dataGridImported";
-            dataGridImported.Size = new Size(667, 371);
+            dataGridImported.Size = new Size(419, 371);
             dataGridImported.TabIndex = 1;
             // 
             // label1
@@ -138,7 +138,7 @@
             pnlInfo.Size = new Size(555, 37);
             pnlInfo.TabIndex = 4;
             pnlInfo.Visible = false;
-            // 
+            //
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
