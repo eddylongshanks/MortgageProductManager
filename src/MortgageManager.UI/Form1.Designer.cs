@@ -38,6 +38,8 @@
             lblFilePath = new Label();
             panel1 = new Panel();
             pnlInfo = new Panel();
+            lblOverallStatus = new Label();
+            lblOutputTitle = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridImported).BeginInit();
             panel1.SuspendLayout();
             pnlInfo.SuspendLayout();
@@ -45,9 +47,9 @@
             // 
             // btnImport
             // 
-            btnImport.Location = new Point(3, 2);
+            btnImport.Location = new Point(82, 2);
             btnImport.Name = "btnImport";
-            btnImport.Size = new Size(75, 33);
+            btnImport.Size = new Size(75, 37);
             btnImport.TabIndex = 0;
             btnImport.Text = "Open...";
             btnImport.UseVisualStyleBackColor = true;
@@ -59,9 +61,9 @@
             dataGridImported.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridImported.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllHeaders;
             dataGridImported.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridImported.Location = new Point(0, 90);
+            dataGridImported.Location = new Point(5, 56);
             dataGridImported.Name = "dataGridImported";
-            dataGridImported.Size = new Size(419, 371);
+            dataGridImported.Size = new Size(603, 456);
             dataGridImported.TabIndex = 1;
             // 
             // label1
@@ -77,7 +79,7 @@
             // 
             lblProductCount.AutoSize = true;
             lblProductCount.ForeColor = Color.FromArgb(0, 192, 0);
-            lblProductCount.Location = new Point(114, 20);
+            lblProductCount.Location = new Point(106, 20);
             lblProductCount.Name = "lblProductCount";
             lblProductCount.Size = new Size(82, 15);
             lblProductCount.TabIndex = 3;
@@ -85,10 +87,10 @@
             // 
             // btnUpload
             // 
-            btnUpload.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnUpload.Location = new Point(580, 11);
+            btnUpload.Enabled = false;
+            btnUpload.Location = new Point(1, 2);
             btnUpload.Name = "btnUpload";
-            btnUpload.Size = new Size(75, 33);
+            btnUpload.Size = new Size(75, 37);
             btnUpload.TabIndex = 0;
             btnUpload.Text = "Upload";
             btnUpload.UseVisualStyleBackColor = true;
@@ -112,7 +114,7 @@
             // 
             lblFilePath.AutoSize = true;
             lblFilePath.ForeColor = Color.FromArgb(0, 192, 0);
-            lblFilePath.Location = new Point(37, 3);
+            lblFilePath.Location = new Point(26, 3);
             lblFilePath.Name = "lblFilePath";
             lblFilePath.Size = new Size(47, 15);
             lblFilePath.TabIndex = 3;
@@ -121,10 +123,11 @@
             // panel1
             // 
             panel1.Controls.Add(pnlInfo);
+            panel1.Controls.Add(btnUpload);
             panel1.Controls.Add(btnImport);
             panel1.Location = new Point(5, 9);
             panel1.Name = "panel1";
-            panel1.Size = new Size(562, 75);
+            panel1.Size = new Size(968, 41);
             panel1.TabIndex = 4;
             // 
             // pnlInfo
@@ -133,18 +136,40 @@
             pnlInfo.Controls.Add(lblProductCount);
             pnlInfo.Controls.Add(label2);
             pnlInfo.Controls.Add(label1);
-            pnlInfo.Location = new Point(4, 35);
+            pnlInfo.Location = new Point(162, 2);
             pnlInfo.Name = "pnlInfo";
-            pnlInfo.Size = new Size(555, 37);
+            pnlInfo.Size = new Size(799, 37);
             pnlInfo.TabIndex = 4;
             pnlInfo.Visible = false;
-            //
+            // 
+            // lblOverallStatus
+            // 
+            lblOverallStatus.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            lblOverallStatus.BackColor = Color.FromArgb(64, 64, 64);
+            lblOverallStatus.ForeColor = Color.White;
+            lblOverallStatus.Location = new Point(614, 76);
+            lblOverallStatus.Name = "lblOverallStatus";
+            lblOverallStatus.Size = new Size(359, 436);
+            lblOverallStatus.TabIndex = 5;
+            lblOverallStatus.Text = "label3";
+            // 
+            // lblOutputTitle
+            // 
+            lblOutputTitle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblOutputTitle.AutoSize = true;
+            lblOutputTitle.Location = new Point(614, 56);
+            lblOutputTitle.Name = "lblOutputTitle";
+            lblOutputTitle.Size = new Size(48, 15);
+            lblOutputTitle.TabIndex = 6;
+            lblOutputTitle.Text = "Output:";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(667, 461);
-            Controls.Add(btnUpload);
+            ClientSize = new Size(978, 517);
+            Controls.Add(lblOutputTitle);
+            Controls.Add(lblOverallStatus);
             Controls.Add(panel1);
             Controls.Add(dataGridImported);
             Name = "Form1";
@@ -154,6 +179,7 @@
             pnlInfo.ResumeLayout(false);
             pnlInfo.PerformLayout();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -168,5 +194,7 @@
         private Label lblFilePath;
         private Panel panel1;
         private Panel pnlInfo;
+        private Label lblOverallStatus;
+        private Label lblOutputTitle;
     }
 }

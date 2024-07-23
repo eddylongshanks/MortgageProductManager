@@ -22,6 +22,7 @@ namespace MortgageManager.UI
             _mortgageCreator = mortgageCreator;
             lblProductCount.Text = string.Empty;
             lblFilePath.Text = string.Empty;
+            lblOverallStatus.Text = string.Empty;
         }
 
         private void ImportButtonClick(object sender, EventArgs e)
@@ -31,7 +32,7 @@ namespace MortgageManager.UI
 
         private async void UploadButtonClick(object sender, EventArgs e)
         {
-            int failureCount = 0;            
+            int failureCount = 0;
             Products products = _csvManager.ImportUsers();
 
             List<Task<Product>> taskList = [];
@@ -65,29 +66,65 @@ namespace MortgageManager.UI
         {
             if (finishedTask.IsCompletedSuccessfully)
             {
-                if (finishedTask.Result.Status == ProductStatus.ProcessedSuccessfully)
-                    Console.WriteLine($"""Product: "{finishedTask.Result.ProductCode}" created. {tasksRemaining} products remaining...""");
-                else
+                foreach (DataGridViewRow row in dataGridImported.Rows)
+                {
+                    var item = (DataRowView)row.DataBoundItem;
+
+                    if (item?.Row[0].ToString() == finishedTask.Result.ProductCode)
+                    {
+                        switch (finishedTask.Result.Status)
+                        {
+                            case ProductStatus.ProductNotCreated:
+                            case ProductStatus.ProductPageNotCreated:
+                                row.Cells[2].Style.ForeColor = Color.Red;
+                                break;
+                            case ProductStatus.InProgress:
+                            case ProductStatus.AlreadyExists:
+                            default:
+                                row.Cells[2].Style.ForeColor = Color.Orange;
+                                break;
+                            case ProductStatus.ProcessedSuccessfully:
+                                row.Cells[2].Style.ForeColor = Color.Green;
+                                break;
+                        }
+
+                        item.Row[2] = finishedTask.Result.Status;
+                    }
+                }
+
+                if (finishedTask.Result.Status != ProductStatus.ProcessedSuccessfully)
+                {
+                    lblOverallStatus.Text += $"Problem with Product: {finishedTask.Result.ProductCode}... {finishedTask.Result.Status}" + Environment.NewLine;
                     _logger.LogWarning($"{finishedTask.Result.ProductCode}: {finishedTask.Result.Status}");
+                }
             }
             else
             {
+                lblOverallStatus.Text += $"{finishedTask.Exception?.Message}" + Environment.NewLine;
                 _logger.LogError($"{finishedTask.Exception?.Message}");
             }
         }
 
         private void PrintCompletionMessage(int failureCount)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.Write($"All tasks processed.");
+            lblOverallStatus.Text += $"All tasks processed.";
 
             if (failureCount > 0)
             {
-                Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.Write($" {failureCount} products were invalid.");
+                lblOverallStatus.Text += $" {failureCount} products were invalid.";
             }
 
-            Console.ForegroundColor = ConsoleColor.White;
+            // move this out?
+            foreach (DataGridViewRow row in dataGridImported.Rows)
+            {
+                var item = (DataRowView)row.DataBoundItem;
+
+                if (item?.Row[2].ToString() == "Unprocessed")
+                {
+                    row.Cells[2].Style.ForeColor = Color.Red;
+                }
+
+            }
         }
 
         private void DialogImportFileOk(object sender, System.ComponentModel.CancelEventArgs e)
@@ -101,16 +138,19 @@ namespace MortgageManager.UI
 
             dt.Columns.Add("Product Code");
             dt.Columns.Add("Name");
+            dt.Columns.Add("Progress");
 
             foreach (var product in products.GetAll())
             {
-                dt.Rows.Add(product.ProductCode, product.Name);
+                dt.Rows.Add(product.ProductCode, product.Name, nameof(ProductStatus.Unprocessed));
                 productCount++;
             }
 
             lblProductCount.Text = productCount.ToString();
 
             dataGridImported.DataSource = dt;
+            dataGridImported.Columns[2].DefaultCellStyle.ForeColor = Color.Gray;
+            btnUpload.Enabled = true;
         }
     }
 }
