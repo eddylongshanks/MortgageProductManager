@@ -16,7 +16,7 @@ namespace MortgageManager.DataAccess.Mappers
             Map(m => m.Heading);
             Map(m => m.Illustration);
             Map(m => m.InitialInterestRate);
-            Map(m => m.MaturityDate);
+            Map(m => m.MaturityDate).Name("Product Maturity Date");
             Map(m => m.MaximumLtv);
             Map(m => m.MortgageTypes).TypeConverter<StringArrayConverter>();
             Map(m => m.Name);
