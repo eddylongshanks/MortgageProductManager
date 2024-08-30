@@ -29,7 +29,7 @@ namespace MortgageManager.DataAccess.Helpers
                 var listOfProducts = new List<Product>();
 
                 using (var reader = new StreamReader(_filePath))
-                using (CsvReader csvReader = new CsvReader(reader, CultureInfo.InvariantCulture))
+                using (CsvReader csvReader = new CsvReader(reader, CultureInfo.GetCultureInfo("en-GB")))
                 {
                     csvReader.Context.RegisterClassMap<CsvMortgageMap>();
                     IEnumerable<Product> products = csvReader.GetRecords<Product>();
