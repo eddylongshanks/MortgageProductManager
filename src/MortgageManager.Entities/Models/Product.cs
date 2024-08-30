@@ -1,5 +1,4 @@
-﻿using CsvHelper.Configuration.Attributes;
-using MortgageManager.Entities.Helpers;
+﻿using MortgageManager.Entities.Helpers;
 
 namespace MortgageManager.Entities.Models
 {

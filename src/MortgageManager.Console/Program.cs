@@ -39,7 +39,8 @@ namespace MortgageManager
             public async Task ExecuteAsync()
             {
                 int failureCount = 0;
-                Products products = csvManager.ImportUsers();
+                csvManager.FileName = "_csv/users.csv";
+                Products products = csvManager.ImportProducts();
 
                 List<Task<Product>> taskList = [];
 

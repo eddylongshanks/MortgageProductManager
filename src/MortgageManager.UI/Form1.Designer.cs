@@ -33,7 +33,6 @@
             label1 = new Label();
             lblProductCount = new Label();
             btnUpload = new Button();
-            dialogImport = new OpenFileDialog();
             label2 = new Label();
             lblFilePath = new Label();
             panel1 = new Panel();
@@ -64,8 +63,11 @@
             dataGridImported.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridImported.Location = new Point(5, 50);
             dataGridImported.Name = "dataGridImported";
+            dataGridImported.ReadOnly = true;
+            dataGridImported.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridImported.Size = new Size(603, 462);
             dataGridImported.TabIndex = 1;
+            dataGridImported.UserDeletingRow += RowDeleting;
             // 
             // label1
             // 
@@ -96,11 +98,6 @@
             btnUpload.Text = "Upload";
             btnUpload.UseVisualStyleBackColor = true;
             btnUpload.Click += UploadButtonClick;
-            // 
-            // dialogImport
-            // 
-            dialogImport.FileName = "openFileDialog1";
-            dialogImport.FileOk += DialogImportFileOk;
             // 
             // label2
             // 
@@ -156,6 +153,7 @@
             // 
             // grpOutput
             // 
+            grpOutput.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
             grpOutput.Controls.Add(lblOverallStatus);
             grpOutput.Location = new Point(614, 42);
             grpOutput.Name = "grpOutput";
@@ -189,7 +187,6 @@
         private Label label1;
         private Label lblProductCount;
         private Button btnUpload;
-        private OpenFileDialog dialogImport;
         private Label label2;
         private Label lblFilePath;
         private Panel panel1;

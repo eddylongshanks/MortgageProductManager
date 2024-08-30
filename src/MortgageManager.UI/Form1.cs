@@ -4,6 +4,7 @@ using MortgageManager.DataAccess.Helpers;
 using MortgageManager.Entities.Helpers;
 using MortgageManager.Entities.Models;
 using System.Data;
+using System.Windows.Forms;
 
 namespace MortgageManager.UI
 {
@@ -13,6 +14,8 @@ namespace MortgageManager.UI
         private readonly ILogger<Application> _logger;
         private readonly CsvManager _csvManager;
         private readonly MortgageCreator _mortgageCreator;
+
+        public Products ImportedProducts { get; set; }
 
         public Form1(ILogger<Application> logger, CsvManager csvManager, MortgageCreator mortgageCreator)
         {
@@ -27,17 +30,60 @@ namespace MortgageManager.UI
 
         private void ImportButtonClick(object sender, EventArgs e)
         {
-            dialogImport.ShowDialog();
+            var dlg = new OpenFileDialog();
+
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                pnlInfo.Visible = true;
+                lblFilePath.Text = dlg.FileName;
+                int productCount = 0;
+
+                DataTable dt = new DataTable();
+
+                dt.Columns.Add("Product Code");
+                dt.Columns.Add("Name");
+                dt.Columns.Add("Progress");
+
+                try
+                {
+                    _csvManager.FileName = dlg.FileName;
+                    ImportedProducts = _csvManager.ImportProducts();
+
+                    foreach (var product in ImportedProducts.GetAll())
+                    {
+                        dt.Rows.Add(product.ProductCode, product.Name, nameof(ProductStatus.Unprocessed));
+                        productCount++;
+                    }
+
+                    dataGridImported.DataSource = dt;
+                    dataGridImported.Columns[2].DefaultCellStyle.ForeColor = Color.Gray;
+                    btnUpload.Enabled = true;
+                }
+                catch (Exception ex)
+                {
+                    lblOverallStatus.Text += ex.Message;
+                }
+
+                lblProductCount.Text = productCount.ToString();
+            }
+        }
+
+        private void RowDeleting(object sender, DataGridViewRowCancelEventArgs e)
+        {
+            var row = e.Row;
+            string? productCode = row.Cells["Product Code"].Value.ToString();
+
+            ImportedProducts.DeleteProduct(productCode);
         }
 
         private async void UploadButtonClick(object sender, EventArgs e)
         {
             int failureCount = 0;
-            Products products = _csvManager.ImportUsers();
 
             List<Task<Product>> taskList = [];
+            lblOverallStatus.Text += $"Processing {ImportedProducts.GetAll().Count()} products... {Environment.NewLine}{Environment.NewLine}";
 
-            foreach (var product in products.GetAll())
+            foreach (var product in ImportedProducts.GetAll())
             {
                 try
                 {
@@ -107,11 +153,11 @@ namespace MortgageManager.UI
 
         private void PrintCompletionMessage(int failureCount)
         {
-            lblOverallStatus.Text += $"All tasks processed.";
+            lblOverallStatus.Text += $"{Environment.NewLine} All tasks processed.";
 
             if (failureCount > 0)
             {
-                lblOverallStatus.Text += $" {failureCount} products were invalid.";
+                lblOverallStatus.Text += $" {failureCount} products were invalid. {Environment.NewLine}{Environment.NewLine}";
             }
 
             // move this out?
@@ -123,34 +169,7 @@ namespace MortgageManager.UI
                 {
                     row.Cells[2].Style.ForeColor = Color.Red;
                 }
-
             }
-        }
-
-        private void DialogImportFileOk(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            pnlInfo.Visible = true;
-            lblFilePath.Text = dialogImport.FileName;
-            Products products = _csvManager.ImportUsers();
-            int productCount = 0;
-
-            DataTable dt = new DataTable();
-
-            dt.Columns.Add("Product Code");
-            dt.Columns.Add("Name");
-            dt.Columns.Add("Progress");
-
-            foreach (var product in products.GetAll())
-            {
-                dt.Rows.Add(product.ProductCode, product.Name, nameof(ProductStatus.Unprocessed));
-                productCount++;
-            }
-
-            lblProductCount.Text = productCount.ToString();
-
-            dataGridImported.DataSource = dt;
-            dataGridImported.Columns[2].DefaultCellStyle.ForeColor = Color.Gray;
-            btnUpload.Enabled = true;
         }
     }
 }

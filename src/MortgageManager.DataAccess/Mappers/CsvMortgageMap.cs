@@ -20,7 +20,7 @@ namespace MortgageManager.DataAccess.Mappers
             Map(m => m.MaximumLtv);
             Map(m => m.MortgageTypes).TypeConverter<StringArrayConverter>();
             Map(m => m.Name);
-            Map(m => m.ProductCode);
+            Map(m => m.ProductCode).Name("New Product Code");
             Map(m => m.RateType).TypeConverter<StringArrayConverter>();
             Map(m => m.StandardVariableRate);
         }
