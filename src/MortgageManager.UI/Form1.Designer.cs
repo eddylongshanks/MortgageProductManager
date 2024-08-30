@@ -39,10 +39,11 @@
             panel1 = new Panel();
             pnlInfo = new Panel();
             lblOverallStatus = new Label();
-            lblOutputTitle = new Label();
+            grpOutput = new GroupBox();
             ((System.ComponentModel.ISupportInitialize)dataGridImported).BeginInit();
             panel1.SuspendLayout();
             pnlInfo.SuspendLayout();
+            grpOutput.SuspendLayout();
             SuspendLayout();
             // 
             // btnImport
@@ -61,9 +62,9 @@
             dataGridImported.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             dataGridImported.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllHeaders;
             dataGridImported.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridImported.Location = new Point(5, 56);
+            dataGridImported.Location = new Point(5, 50);
             dataGridImported.Name = "dataGridImported";
-            dataGridImported.Size = new Size(603, 456);
+            dataGridImported.Size = new Size(603, 462);
             dataGridImported.TabIndex = 1;
             // 
             // label1
@@ -125,7 +126,7 @@
             panel1.Controls.Add(pnlInfo);
             panel1.Controls.Add(btnUpload);
             panel1.Controls.Add(btnImport);
-            panel1.Location = new Point(5, 9);
+            panel1.Location = new Point(5, 5);
             panel1.Name = "panel1";
             panel1.Size = new Size(968, 41);
             panel1.TabIndex = 4;
@@ -145,31 +146,30 @@
             // lblOverallStatus
             // 
             lblOverallStatus.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
-            lblOverallStatus.BackColor = Color.FromArgb(64, 64, 64);
-            lblOverallStatus.ForeColor = Color.White;
-            lblOverallStatus.Location = new Point(614, 76);
+            lblOverallStatus.BackColor = SystemColors.Control;
+            lblOverallStatus.ForeColor = SystemColors.ControlText;
+            lblOverallStatus.Location = new Point(9, 32);
             lblOverallStatus.Name = "lblOverallStatus";
-            lblOverallStatus.Size = new Size(359, 436);
+            lblOverallStatus.Size = new Size(342, 430);
             lblOverallStatus.TabIndex = 5;
             lblOverallStatus.Text = "label3";
             // 
-            // lblOutputTitle
+            // grpOutput
             // 
-            lblOutputTitle.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            lblOutputTitle.AutoSize = true;
-            lblOutputTitle.Location = new Point(614, 56);
-            lblOutputTitle.Name = "lblOutputTitle";
-            lblOutputTitle.Size = new Size(48, 15);
-            lblOutputTitle.TabIndex = 6;
-            lblOutputTitle.Text = "Output:";
+            grpOutput.Controls.Add(lblOverallStatus);
+            grpOutput.Location = new Point(614, 42);
+            grpOutput.Name = "grpOutput";
+            grpOutput.Size = new Size(359, 470);
+            grpOutput.TabIndex = 7;
+            grpOutput.TabStop = false;
+            grpOutput.Text = "Output";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(978, 517);
-            Controls.Add(lblOutputTitle);
-            Controls.Add(lblOverallStatus);
+            Controls.Add(grpOutput);
             Controls.Add(panel1);
             Controls.Add(dataGridImported);
             Name = "Form1";
@@ -178,8 +178,8 @@
             panel1.ResumeLayout(false);
             pnlInfo.ResumeLayout(false);
             pnlInfo.PerformLayout();
+            grpOutput.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -195,6 +195,6 @@
         private Panel panel1;
         private Panel pnlInfo;
         private Label lblOverallStatus;
-        private Label lblOutputTitle;
+        private GroupBox grpOutput;
     }
 }

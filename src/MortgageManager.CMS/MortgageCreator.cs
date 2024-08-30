@@ -91,10 +91,9 @@ namespace MortgageManager.CMS
 
                 return response != null;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError($"""Error processing product: "{productMortgage.Codename}". {ex.Message}""");
-                return false;
+                throw;
             }
         }
 
@@ -126,8 +125,7 @@ namespace MortgageManager.CMS
             }
             catch (Exception ex)
             {
-                _logger.LogError($"""Error processing product page: "{productMortgage.Codename}". {ex.Message}""");
-                return false;
+                throw;
             }
         }
 

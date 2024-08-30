@@ -94,7 +94,7 @@ namespace MortgageManager.UI
 
                 if (finishedTask.Result.Status != ProductStatus.ProcessedSuccessfully)
                 {
-                    lblOverallStatus.Text += $"Problem with Product: {finishedTask.Result.ProductCode}... {finishedTask.Result.Status}" + Environment.NewLine;
+                    lblOverallStatus.Text += $"Product: {finishedTask.Result.ProductCode}, {finishedTask.Result.Status}" + Environment.NewLine;
                     _logger.LogWarning($"{finishedTask.Result.ProductCode}: {finishedTask.Result.Status}");
                 }
             }
