@@ -146,7 +146,7 @@ namespace MortgageManager.UI
             }
             else
             {
-                lblOverallStatus.Text += $"{finishedTask.Exception?.Message}" + Environment.NewLine;
+                lblOverallStatus.Text += $"{finishedTask.Exception?.InnerException.Message}" + Environment.NewLine;
                 _logger.LogError($"{finishedTask.Exception?.Message}");
             }
         }

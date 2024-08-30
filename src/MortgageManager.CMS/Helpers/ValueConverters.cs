@@ -12,7 +12,7 @@ namespace MortgageManager.CMS.Helpers
             "new_customer" => "new",
             "existing_customer" => "existing",
             null => "",
-            _ => throw new ArgumentException($"""The provided value of "Client Type" was invalid. Valid options are: {ClientTypeOptions}"""),
+            _ => throw new ArgumentException($"""'Client Type' value was invalid.{Environment.NewLine}Valid options are: {ClientTypeOptions}{Environment.NewLine}"""),
         };
 
         public string ConvertRateTypes(string? rateType) => rateType switch
@@ -21,7 +21,7 @@ namespace MortgageManager.CMS.Helpers
             "discounted_variable_rate" => "variable",
             "base_rate_tracker" => "tracker",
             null => "",
-            _ => throw new ArgumentException($"""The provided value of "Rate Type" was invalid. Valid options are: {RateTypeOptions}"""),
+            _ => throw new ArgumentException($"""'Rate Type' value was invalid.{Environment.NewLine}Valid options are: {RateTypeOptions}{Environment.NewLine}"""),
         };
 
         public string ConvertDealTerms(string? dealTerm) => dealTerm switch
@@ -32,7 +32,7 @@ namespace MortgageManager.CMS.Helpers
             "5" => "five_years",
             "10" => "ten_years",
             null => "",
-            _ => throw new ArgumentException($"""The provided value of "Term" was invalid. Valid options are: {DealTermsOptions}"""),
+            _ => throw new ArgumentException($"""'Term' value was invalid.{Environment.NewLine}Valid options are: {DealTermsOptions}{Environment.NewLine}"""),
         };
     }
 }

@@ -42,7 +42,7 @@ public class ProductMortgageMapper : IProductMortgageMapper
         }
         catch (Exception ex)
         {
-            throw new ArgumentException($"Product: {product.ProductCode}. {ex.Message}");
+            throw new ArgumentException($"Product: {product.ProductCode}:{Environment.NewLine}{ex.Message}");
         }
     }
 
