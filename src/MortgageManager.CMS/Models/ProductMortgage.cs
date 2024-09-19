@@ -66,7 +66,7 @@ namespace MortgageManager.CMS.Models
         //public IContentItemSystemAttributes System { get; set; }
         //public IEnumerable<IAsset> TermsAndConditions { get; set; }
 
-        public string Codename => Name?.Replace(" ", "_").Replace("-", "_").Replace(".", "_").ToLower();
+        public string Codename { get; set; }
         public string[] ClientType { get; set; }
         public string ComparisonCost { get; set; }
         public string[] DealTerm { get; set; }

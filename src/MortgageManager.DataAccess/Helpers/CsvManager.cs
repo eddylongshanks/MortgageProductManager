@@ -32,7 +32,10 @@ namespace MortgageManager.DataAccess.Helpers
                     
                     foreach (var p in products)
                     {
-                        listOfProducts.Add(p);
+                        if (p.ProductCode != null)
+                        {
+                            listOfProducts.Add(p);
+                        }
                     }
                 }
 

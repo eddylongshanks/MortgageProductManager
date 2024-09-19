@@ -21,6 +21,7 @@ public class ProductMortgageMapper : IProductMortgageMapper
         {
             var productMortgage = new ProductMortgage()
             {
+                Codename = $"mortgage_{product.ProductCode}_{Guid.NewGuid()}".Substring(0, 50).Replace("-", "_").ToLower(),
                 ClientType = MapMultipleArrayValues(product.ClientType, _valueConverters.ConvertClientTypes),
                 ComparisonCost = product.APRC,
                 DealTerm = MapArrayValuesToSingle(product.DealTerm, _valueConverters.ConvertDealTerms),
@@ -31,7 +32,7 @@ public class ProductMortgageMapper : IProductMortgageMapper
                 InitialInterestRate = product.InitialInterestRate,
                 MaturityDate = product.MaturityDate,
                 MaximumLtv = product.MaximumLtv,
-                MortgageTypes = product.MortgageTypes,
+                MortgageTypes = MapMultipleArrayValues(product.MortgageTypes, _valueConverters.ConvertMortgageTypes),
                 Name = product.Name,
                 ProductCode = product.ProductCode,
                 RateType = MapArrayValuesToSingle(product.RateType, _valueConverters.ConvertRateTypes),
@@ -46,12 +47,13 @@ public class ProductMortgageMapper : IProductMortgageMapper
         }
     }
 
-    private string[] MapMultipleArrayValues(string[] values, Func<string?, string> method)
+    private string[] MapMultipleArrayValues(string[] values, Func<string?, string[]> method)
     {
         List<string> convertedValues = [];
 
         foreach (var value in values)
-            convertedValues.Add(method(value));
+            foreach (var item in method(value))
+                convertedValues.Add(item);            
 
         return convertedValues.ToArray();
     }

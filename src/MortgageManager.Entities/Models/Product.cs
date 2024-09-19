@@ -6,6 +6,8 @@ namespace MortgageManager.Entities.Models
     {
         public string APRC { get; set; }
 
+        public string CashbackAmount { get; set; }
+
         public string[] ClientType { get; set; }
 
         public string[] DealTerm { get; set; }
@@ -17,6 +19,8 @@ namespace MortgageManager.Entities.Models
         public string Heading { get; set; }
 
         public string? Illustration { get; set; }
+
+        //public string IncentiveOptions { get; set; }
 
         public string InitialInterestRate { get; set; }
 
